@@ -113,71 +113,15 @@ _file_method_helper = (method, params, cb) ->
 
 fileRename = (params, cb) ->
     _file_method_helper('rename', params, cb)
-    # params.token = params.token || token
-    # $.ajax
-    #     url: '#{base_url}/file/rename'
-    #     data: params
-    # .done (data) =>
-    #     data = JSON.parse(data)
-    #     response = data.response
-    #     if data.status is 200
-    #         if cb && typeof cb == 'function' then cb(null, data.response.file)
-    #     else
-    #         if cb && typeof cb == 'function'
-    #             cb(new ApiError("#{data.status}: #{data.details}"))
-    # .fail (jqxhr, status) =>
-    #     if cb && typeof cb == 'function' then cb(new NetworkError("#{jqxhr.status}: #{status}"))
 
 fileDelete = (params, cb) ->
     _file_method_helper('delete', params, cb)
-    # params.token = params.token || token
-    # $.ajax
-    #     url: '#{base_url}/file/delete'
-    #     data: params
-    # .done (data) =>
-    #     data = JSON.parse(data)
-    #     response = data.response
-    #     if data.status is 200
-    #         if cb && typeof cb == 'function' then cb(null, data.response)
-    #     else
-    #         if cb && typeof cb == 'function'
-    #             cb(new ApiError("#{data.status}: #{data.details}"))
-    # .fail (jqxhr, status) =>
-    #     if cb && typeof cb == 'function' then cb(new NetworkError("#{jqxhr.status}: #{status}"))
 
 fileCopy = (params, cb) ->
     _file_method_helper('copy', params, cb)
-    # params.token = params.token || token
-    # $.ajax
-    #     url: '#{base_url}/file/copy'
-    #     data: params
-    # .done (data) =>
-    #     data = JSON.parse(data)
-    #     response = data.response
-    #     if data.status is 200
-    #         if cb && typeof cb == 'function' then cb(null, data.response)
-    #     else
-    #         if cb && typeof cb == 'function'
-    #             cb(new ApiError("#{data.status}: #{data.details}"))
-    # .fail (jqxhr, status) =>
-    #     if cb && typeof cb == 'function' then cb(new NetworkError("#{jqxhr.status}: #{status}"))
 
 fileMove = (params, cb) ->
     _file_method_helper('move', params, cb)
-    # params.token = params.token || token
-    # $.ajax
-    #     url: '#{base_url}/file/move'
-    #     data: params
-    # .done (data) =>
-    #     data = JSON.parse(data)
-    #     response = data.response
-    #     if data.status is 200
-    #         if cb && typeof cb == 'function' then cb(null, data.response)
-    #     else
-    #         if cb && typeof cb == 'function'
-    #             cb(new ApiError("#{data.status}: #{data.details}"))
-    # .fail (jqxhr, status) =>
-    #     if cb && typeof cb == 'function' then cb(new NetworkError("#{jqxhr.status}: #{status}"))
 
 
 _fldr_ops = ['info', 'content', 'create', 'rename']
@@ -205,37 +149,9 @@ _folder_method_helper = (method, params, cb) ->
 # TODO: how it's different about subfolder list from folderContent?
 folderInfo = (params, cb) ->
     _folder_method_helper('info', params, cb)
-    # params.token = params.token || token
-    # $.ajax
-    #     url: '#{base_url}/folder/info'
-    #     data: params
-    # .done (data) =>
-    #     data = JSON.parse(data)
-    #     response = data.response
-    #     if data.status is 200
-    #         if cb && typeof cb == 'function' then cb(null, data.response.folder)
-    #     else
-    #         if cb && typeof cb == 'function'
-    #             cb(new ApiError("#{data.status}: #{data.details}"))
-    # .fail (jqxhr, status) =>
-    #     if cb && typeof cb == 'function' then cb(new NetworkError("#{jqxhr.status}: #{status}"))
 
 folderContent = (params, cb) ->
     _folder_method_helper('content', params, cb)
-    # params.token = params.token || token
-    # $.ajax
-    #     url: '#{base_url}/folder/info'
-    #     data: params
-    # .done (data) =>
-    #     data = JSON.parse(data)
-    #     response = data.response
-    #     if data.status is 200
-    #         if cb && typeof cb == 'function' then cb(null, data.response.folder)
-    #     else
-    #         if cb && typeof cb == 'function'
-    #             cb(new ApiError("#{data.status}: #{data.details}"))
-    # .fail (jqxhr, status) =>
-    #     if cb && typeof cb == 'function' then cb(new NetworkError("#{jqxhr.status}: #{status}"))
 
 folderCreate = (params, cb) ->
     _folder_method_helper('create', params, cb)
@@ -255,8 +171,10 @@ folderMove = (params, cb) ->
 
 window.FTClient = FTClient = {
     # internal stuff, can monkeypatch thought
-    _token: token
-    _base_url: base_url
+    _setToken: (newToken) ->
+        token = newToken
+    _setBaseUrl: (newBaseUrl) ->
+        base_url = newBaseUrl
     # error types
     ApiError: ApiError
     NetworkError: NetworkError
