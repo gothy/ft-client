@@ -3,10 +3,16 @@ base_url = 'http://filestrash.com/api/v1'
 token = null
 
 class ApiError extends Error
-    constructor: ->
+    constructor: (message) ->
+        super()
+        @name = 'ApiError'
+        @message = message
 
 class NetworkError extends Error
-    constructor: ->
+    constructor: (message) ->
+        super()
+        @name = 'NetworkError'
+        @message = message
 
 
 userLogin = (login, password, cb) ->
@@ -41,7 +47,7 @@ userInfo = (cb, params = {}) ->
     .fail (jqxhr, status) =>
         if cb && typeof cb == 'function' then cb(new NetworkError("#{jqxhr.status}: #{status}"))
 
-fileUpload = (params, cb, progress_cb) ->
+fileUpload = (params, file, cb, progress_cb) ->
     params.token = params.token || token
     $.ajax
         url: "#{base_url}/file/upload"
@@ -51,7 +57,7 @@ fileUpload = (params, cb, progress_cb) ->
         response = data.response
         if data.status is 200
             if response.upload_url
-                _do_file_upload(params, upload_url, cb, progress_cb)
+                _do_file_upload(params, file, response.upload_url, cb, progress_cb)
             else
                 if cb && typeof cb == 'function' then cb(null, data.response.file)
         else
@@ -60,10 +66,10 @@ fileUpload = (params, cb, progress_cb) ->
     .fail (jqxhr, status) =>
         if cb && typeof cb == 'function' then cb(new NetworkError("#{jqxhr.status}: #{status}"))
 
-_do_file_upload = (params, upload_url, cb, progress_cb) ->
+_do_file_upload = (params, file, upload_url, cb, progress_cb) ->
     form_data = new FormData()
-    form_data.append("file", params.file)
-    form_data.append("token", token)
+    form_data.append("file", file)
+    form_data.append("token", params.token || token)
     upload_progress = (event) =>
         if event.lengthComputable
             if progress_cb && typeof progress_cb == 'function'
@@ -83,6 +89,7 @@ _do_file_upload = (params, upload_url, cb, progress_cb) ->
             return myXhr
     .done (data) =>
         data = JSON.parse(data)
+        console.log data
         if data.status is 200
             if cb && typeof cb == 'function' then cb(null, data.response.file)
         else

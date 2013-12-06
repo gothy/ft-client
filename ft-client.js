@@ -13,7 +13,11 @@
 
     __extends(ApiError, _super);
 
-    function ApiError() {}
+    function ApiError(message) {
+      ApiError.__super__.constructor.call(this);
+      this.name = 'ApiError';
+      this.message = message;
+    }
 
     return ApiError;
 
@@ -23,7 +27,11 @@
 
     __extends(NetworkError, _super);
 
-    function NetworkError() {}
+    function NetworkError(message) {
+      NetworkError.__super__.constructor.call(this);
+      this.name = 'NetworkError';
+      this.message = message;
+    }
 
     return NetworkError;
 
@@ -83,7 +91,7 @@
     });
   };
 
-  fileUpload = function(params, cb, progress_cb) {
+  fileUpload = function(params, file, cb, progress_cb) {
     var _this = this;
     params.token = params.token || token;
     return $.ajax({
@@ -95,7 +103,7 @@
       response = data.response;
       if (data.status === 200) {
         if (response.upload_url) {
-          return _do_file_upload(params, upload_url, cb, progress_cb);
+          return _do_file_upload(params, file, response.upload_url, cb, progress_cb);
         } else {
           if (cb && typeof cb === 'function') {
             return cb(null, data.response.file);
@@ -113,12 +121,12 @@
     });
   };
 
-  _do_file_upload = function(params, upload_url, cb, progress_cb) {
+  _do_file_upload = function(params, file, upload_url, cb, progress_cb) {
     var form_data, upload_progress,
       _this = this;
     form_data = new FormData();
-    form_data.append("file", params.file);
-    form_data.append("token", token);
+    form_data.append("file", file);
+    form_data.append("token", params.token || token);
     upload_progress = function(event) {
       if (event.lengthComputable) {
         if (progress_cb && typeof progress_cb === 'function') {
@@ -143,6 +151,7 @@
       }
     }).done(function(data) {
       data = JSON.parse(data);
+      console.log(data);
       if (data.status === 200) {
         if (cb && typeof cb === 'function') {
           return cb(null, data.response.file);
