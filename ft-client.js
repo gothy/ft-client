@@ -87,7 +87,7 @@
     var _this = this;
     params.token = params.token || token;
     return $.ajax({
-      url: '#{base_url}/file/upload',
+      url: "" + base_url + "/file/upload",
       data: params
     }).done(function(data) {
       var response;
@@ -163,7 +163,7 @@
     var _this = this;
     params.token = params.token || token;
     return $.ajax({
-      url: '#{base_url}/file/#{method}',
+      url: "" + base_url + "/file/" + method,
       data: params
     }).done(function(data) {
       var response, result, _ref, _ref1;
@@ -208,7 +208,7 @@
     var _this = this;
     params.token = params.token || token;
     return $.ajax({
-      url: '#{base_url}/folder/#{method}',
+      url: "" + base_url + "/folder/" + method,
       data: params
     }).done(function(data) {
       var response, result, _ref, _ref1;
@@ -264,8 +264,12 @@
   };
 
   window.FTClient = FTClient = {
-    _token: token,
-    _base_url: base_url,
+    _setToken: function(newToken) {
+      return token = newToken;
+    },
+    _setBaseUrl: function(newBaseUrl) {
+      return base_url = newBaseUrl;
+    },
     ApiError: ApiError,
     NetworkError: NetworkError,
     userLogin: userLogin,

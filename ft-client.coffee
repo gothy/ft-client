@@ -44,7 +44,7 @@ userInfo = (cb, params = {}) ->
 fileUpload = (params, cb, progress_cb) ->
     params.token = params.token || token
     $.ajax
-        url: '#{base_url}/file/upload'
+        url: "#{base_url}/file/upload"
         data: params
     .done (data) =>
         data = JSON.parse(data)
@@ -95,7 +95,7 @@ _do_file_upload = (params, upload_url, cb, progress_cb) ->
 _file_method_helper = (method, params, cb) ->
     params.token = params.token || token
     $.ajax
-        url: '#{base_url}/file/#{method}'
+        url: "#{base_url}/file/#{method}"
         data: params
     .done (data) =>
         data = JSON.parse(data)
@@ -128,7 +128,7 @@ _fldr_ops = ['info', 'content', 'create', 'rename']
 _folder_method_helper = (method, params, cb) ->
     params.token = params.token || token
     $.ajax
-        url: '#{base_url}/folder/#{method}'
+        url: "#{base_url}/folder/#{method}"
         data: params
     .done (data) =>
         data = JSON.parse(data)
