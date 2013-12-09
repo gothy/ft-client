@@ -64,14 +64,15 @@
     });
   };
 
-  userInfo = function(cb, params) {
+  userInfo = function(params, cb) {
     var _this = this;
-    if (params == null) {
-      params = {};
+    if (arguments.length === 2) {
+      params.token = params.token || token;
+    } else if (arguments.length === 1 && typeof params === 'function') {
+      cb = params;
     }
-    params.token = params.token || token;
     return $.ajax({
-      url: "" + base_url + "/user/login",
+      url: "" + base_url + "/user/info",
       data: params
     }).done(function(data) {
       data = JSON.parse(data);
@@ -91,7 +92,7 @@
     });
   };
 
-  fileUpload = function(params, file, cb, progress_cb) {
+  fileUpload = function(params, file, progress_cb, cb) {
     var _this = this;
     params.token = params.token || token;
     return $.ajax({
@@ -103,7 +104,7 @@
       response = data.response;
       if (data.status === 200) {
         if (response.upload_url) {
-          return _do_file_upload(params, file, response.upload_url, cb, progress_cb);
+          return _do_file_upload(params, file, response.upload_url, progress_cb, cb);
         } else {
           if (cb && typeof cb === 'function') {
             return cb(null, data.response.file);
@@ -121,7 +122,7 @@
     });
   };
 
-  _do_file_upload = function(params, file, upload_url, cb, progress_cb) {
+  _do_file_upload = function(params, file, upload_url, progress_cb, cb) {
     var form_data, upload_progress,
       _this = this;
     form_data = new FormData();
@@ -151,7 +152,6 @@
       }
     }).done(function(data) {
       data = JSON.parse(data);
-      console.log(data);
       if (data.status === 200) {
         if (cb && typeof cb === 'function') {
           return cb(null, data.response.file);

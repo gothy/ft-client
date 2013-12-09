@@ -32,10 +32,14 @@ userLogin = (login, password, cb) ->
     .fail (jqxhr, status) =>
         if cb && typeof cb == 'function' then cb(new NetworkError("#{jqxhr.status}: #{status}"))
 
-userInfo = (cb, params = {}) ->
-    params.token = params.token || token
+userInfo = (params, cb) ->
+    if arguments.length is 2 # user wants to pass a custom param
+        params.token = params.token || token
+    else if arguments.length is 1 and typeof params is 'function'
+        cb = params
+
     $.ajax
-        url: "#{base_url}/user/login"
+        url: "#{base_url}/user/info"
         data: params
     .done (data) =>
         data = JSON.parse(data)
@@ -47,7 +51,7 @@ userInfo = (cb, params = {}) ->
     .fail (jqxhr, status) =>
         if cb && typeof cb == 'function' then cb(new NetworkError("#{jqxhr.status}: #{status}"))
 
-fileUpload = (params, file, cb, progress_cb) ->
+fileUpload = (params, file, progress_cb, cb) ->
     params.token = params.token || token
     $.ajax
         url: "#{base_url}/file/upload"
@@ -57,7 +61,7 @@ fileUpload = (params, file, cb, progress_cb) ->
         response = data.response
         if data.status is 200
             if response.upload_url
-                _do_file_upload(params, file, response.upload_url, cb, progress_cb)
+                _do_file_upload(params, file, response.upload_url, progress_cb, cb)
             else
                 if cb && typeof cb == 'function' then cb(null, data.response.file)
         else
@@ -66,7 +70,7 @@ fileUpload = (params, file, cb, progress_cb) ->
     .fail (jqxhr, status) =>
         if cb && typeof cb == 'function' then cb(new NetworkError("#{jqxhr.status}: #{status}"))
 
-_do_file_upload = (params, file, upload_url, cb, progress_cb) ->
+_do_file_upload = (params, file, upload_url, progress_cb, cb) ->
     form_data = new FormData()
     form_data.append("file", file)
     form_data.append("token", params.token || token)
@@ -89,7 +93,6 @@ _do_file_upload = (params, file, upload_url, cb, progress_cb) ->
             return myXhr
     .done (data) =>
         data = JSON.parse(data)
-        console.log data
         if data.status is 200
             if cb && typeof cb == 'function' then cb(null, data.response.file)
         else
