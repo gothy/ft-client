@@ -153,7 +153,6 @@ _folder_method_helper = (method, params, cb) ->
     .fail (jqxhr, status) =>
         if cb && typeof cb == 'function' then cb(new NetworkError("#{jqxhr.status}: #{status}"))
 
-# TODO: how it's different about subfolder list from folderContent?
 folderInfo = (params, cb) ->
     _folder_method_helper('info', params, cb)
 
@@ -176,6 +175,37 @@ folderMove = (params, cb) ->
     _folder_method_helper('move', params, cb)
 
 
+_trashcan_method_helper = (method, params, cb) ->
+    params.token = params.token || token
+    $.ajax
+        url: "#{base_url}/trashcan/#{method}"
+        data: params
+    .done (data) =>
+        data = JSON.parse(data)
+        response = data.response
+        if data.status is 200
+            if method is 'content'
+                result = data?.response?.files
+            else
+                result = data?.response?.result
+
+            if cb && typeof cb == 'function' then cb(null, result)
+        else
+            if cb && typeof cb == 'function'
+                cb(new ApiError("#{data?.status}: #{data?.details}"))
+    .fail (jqxhr, status) =>
+        if cb && typeof cb == 'function' then cb(new NetworkError("#{jqxhr.status}: #{status}"))
+
+trashcanContent = (params, cb) ->
+    _trashcan_method_helper('content', params, cb)
+
+trashcanEmpty = (params, cb) ->
+    _trashcan_method_helper('empty', params, cb)
+
+trashcanRestore = (params, cb) ->
+    _trashcan_method_helper('restore', params, cb)
+
+
 window.FTClient = FTClient = {
     # internal stuff, can monkeypatch thought
     _setToken: (newToken) ->
@@ -188,9 +218,22 @@ window.FTClient = FTClient = {
     # api methods
     userLogin: userLogin
     userInfo: userInfo
+
     fileUpload: fileUpload
     fileRename: fileRename
     fileDelete: fileDelete
     fileMove: fileMove
     fileCopy: fileCopy
+
+    folderInfo: folderInfo
+    folderContent: folderContent
+    folderCreate: folderCreate
+    folderRename: folderRename
+    folderDelete: folderDelete
+    folderCopy: folderCopy
+    folderMove: folderMove
+
+    trashcanContent: trashcanContent
+    trashcanEmpty: trashcanEmpty
+    trashcanRestore: trashcanRestore
 }
