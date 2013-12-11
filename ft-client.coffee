@@ -57,7 +57,7 @@ _item_method_helper = (itype, method, params, response_field, cb) ->
             data = JSON.parse(xhr.responseText)
             response = data.response
 
-            if data.status is 200 and data.result
+            if data.status is 200 and response
                 # return the default result or a special field?
                 result = if response_field then response[response_field] else response
 
@@ -85,7 +85,7 @@ _item_method_helper = (itype, method, params, response_field, cb) ->
     xhr.send()
 
 userLogin = (login, password, cb) ->
-    _item_method_helper('user', 'login', {login: login, password: password}, null, cb)
+    _item_method_helper('user', 'login', {login: login, password: password}, 'user', cb)
 
 userInfo = (cb) ->
     _item_method_helper('user', 'info', {}, 'user', cb)
@@ -112,29 +112,28 @@ fileMove = (file_id, folder_id_dest, cb) ->
     _item_method_helper('file', 'move', params, null, cb)
 
 
-folderInfo = (folder_id, cb) ->
+folderInfo = (options, cb) ->
     params = {}
     args = Array.prototype.slice.call(arguments)
     cb = args.pop()
-    if args.length is 1 # user wants to pass a custom folder_id
-        params.folder_id = args.shift()
+    if args.length is 1 # user wants to pass custom fields
+        params.folder_id = options.folder_id
     _item_method_helper('folder', 'info', params, 'folder', cb)
 
-folderContent = (folder_id, cb) ->
+folderContent = (options, cb) ->
     params = {}
     args = Array.prototype.slice.call(arguments)
     cb = args.pop()
-    if args.length is 1 # user wants to pass a custom folder_id
-        params.folder_id = args.shift()
+    if args.length is 1 # user wants to pass a custom fields
+        params.folder_id = options.folder_id
     _item_method_helper('folder', 'content', params, 'folder', cb)
 
-folderCreate = (name, folder_id, cb) ->
-    params = {}
+folderCreate = (name, options, cb) ->
+    params = {name: name}
     args = Array.prototype.slice.call(arguments)
     cb = args.pop()
-    params.name = args.shift()
-    if args.length is 1 # user wants to pass a custom folder_id
-        params.folder_id = args.shift()
+    if args.length is 2 # user wants to pass a custom fields
+        params.folder_id = options.folder_id
 
     _item_method_helper('folder', 'create', params, 'folder', cb)
 

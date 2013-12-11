@@ -94,7 +94,7 @@
       if (xhr.readyState === 4 && xhr.status === 200) {
         data = JSON.parse(xhr.responseText);
         response = data.response;
-        if (data.status === 200 && data.result) {
+        if (data.status === 200 && response) {
           result = response_field ? response[response_field] : response;
           twolevel = false;
           if (itype === 'user' && method === 'login') {
@@ -126,7 +126,7 @@
     return _item_method_helper('user', 'login', {
       login: login,
       password: password
-    }, null, cb);
+    }, 'user', cb);
   };
 
   userInfo = function(cb) {
@@ -180,36 +180,37 @@
     return _item_method_helper('file', 'move', params, null, cb);
   };
 
-  folderInfo = function(folder_id, cb) {
+  folderInfo = function(options, cb) {
     var args, params;
     params = {};
     args = Array.prototype.slice.call(arguments);
     cb = args.pop();
     if (args.length === 1) {
-      params.folder_id = args.shift();
+      params.folder_id = options.folder_id;
     }
     return _item_method_helper('folder', 'info', params, 'folder', cb);
   };
 
-  folderContent = function(folder_id, cb) {
+  folderContent = function(options, cb) {
     var args, params;
     params = {};
     args = Array.prototype.slice.call(arguments);
     cb = args.pop();
     if (args.length === 1) {
-      params.folder_id = args.shift();
+      params.folder_id = options.folder_id;
     }
     return _item_method_helper('folder', 'content', params, 'folder', cb);
   };
 
-  folderCreate = function(name, folder_id, cb) {
+  folderCreate = function(name, options, cb) {
     var args, params;
-    params = {};
+    params = {
+      name: name
+    };
     args = Array.prototype.slice.call(arguments);
     cb = args.pop();
-    params.name = args.shift();
-    if (args.length === 1) {
-      params.folder_id = args.shift();
+    if (args.length === 2) {
+      params.folder_id = options.folder_id;
     }
     return _item_method_helper('folder', 'create', params, 'folder', cb);
   };
