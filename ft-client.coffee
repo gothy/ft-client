@@ -55,11 +55,10 @@ _item_method_helper = (itype, method, params, response_field, cb) ->
     xhr.onreadystatechange = ->
         if xhr.readyState is 4 and xhr.status is 200
             data = JSON.parse(xhr.responseText)
-            response = data.response
 
-            if data.status is 200 and response
+            if data.status is 200 and data.response
                 # return the default result or a special field?
-                result = if response_field then response[response_field] else response
+                result = if response_field then data.response[response_field] else data.response
 
                 # two-level method or not?
                 twolevel = false

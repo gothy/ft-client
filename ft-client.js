@@ -90,12 +90,11 @@
     xhr = new XMLHttpRequest();
     xhr.open("GET", "" + base_url + "/" + itype + "/" + method + "?" + params_str, true);
     xhr.onreadystatechange = function() {
-      var data, response, result, twolevel;
+      var data, result, twolevel;
       if (xhr.readyState === 4 && xhr.status === 200) {
         data = JSON.parse(xhr.responseText);
-        response = data.response;
-        if (data.status === 200 && response) {
-          result = response_field ? response[response_field] : response;
+        if (data.status === 200 && data.response) {
+          result = response_field ? data.response[response_field] : data.response;
           twolevel = false;
           if (itype === 'user' && method === 'login') {
             token = data.response.token;
