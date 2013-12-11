@@ -2,8 +2,7 @@
 (function() {
   var ApiError, FTClient, NetworkError, base_url, fileCopy, fileDelete, fileMove, fileRename, fileUpload, folderContent, folderCopy, folderCreate, folderDelete, folderInfo, folderMove, folderRename, token, trashcanContent, trashcanEmpty, trashcanRestore, userInfo, userLogin, _do_file_upload, _fldr_ops, _item_method_helper,
     __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   base_url = 'http://filestrash.com/api/v1';
 
@@ -78,7 +77,7 @@
 
   _fldr_ops = ['info', 'content', 'create', 'rename'];
 
-  _item_method_helper = function(itype, method, params, cb) {
+  _item_method_helper = function(itype, method, params, response_field, cb) {
     var k, params_str, v, xhr;
     params.token = params.token || token;
     params_str = '';
@@ -91,32 +90,20 @@
     xhr = new XMLHttpRequest();
     xhr.open("GET", "" + base_url + "/" + itype + "/" + method + "?" + params_str, true);
     xhr.onreadystatechange = function() {
-      var data, response, result, twolevel, _ref, _ref1, _ref2, _ref3;
+      var data, response, result, twolevel;
       if (xhr.readyState === 4 && xhr.status === 200) {
         data = JSON.parse(xhr.responseText);
         response = data.response;
-        if (data.status === 200) {
+        if (data.status === 200 && data.result) {
+          result = response_field ? response[response_field] : response;
           twolevel = false;
-          if (itype === 'file' && method === 'upload') {
+          if (itype === 'user' && method === 'login') {
+            token = data.response.token;
+          } else if (itype === 'file' && method === 'upload') {
             if (data.response.upload_url) {
-              _do_file_upload(params, data.response.upload_url, cb);
               twolevel = true;
-            } else {
-              result = data != null ? (_ref = data.response) != null ? _ref.file : void 0 : void 0;
+              _do_file_upload(params, data.response.upload_url, cb);
             }
-          } else if ((itype === 'file' && method === 'rename') || (itype === 'folder' && __indexOf.call(_fldr_ops, method) >= 0)) {
-            result = data != null ? (_ref1 = data.response) != null ? _ref1[itype] : void 0 : void 0;
-          } else if (itype === 'user') {
-            if (method === 'login') {
-              token = data.response.token;
-              result = data.response;
-            } else if (method === 'info') {
-              result = data.response.user;
-            }
-          } else if (itype === 'trashcan' && method === 'content') {
-            result = data != null ? (_ref2 = data.response) != null ? _ref2.files : void 0 : void 0;
-          } else {
-            result = data != null ? (_ref3 = data.response) != null ? _ref3.result : void 0 : void 0;
           }
           if (cb && typeof cb === 'function' && (!twolevel)) {
             return cb(null, result);
@@ -139,21 +126,23 @@
     return _item_method_helper('user', 'login', {
       login: login,
       password: password
-    }, cb);
+    }, null, cb);
   };
 
   userInfo = function(cb) {
-    return _item_method_helper('user', 'info', {}, cb);
+    return _item_method_helper('user', 'info', {}, 'user', cb);
   };
 
   fileUpload = function(name, hash, size, file, progress_cb, cb) {
-    return _item_method_helper('file', 'upload', {
+    var params;
+    params = {
       name: name,
       hash: hash,
       size: size,
       file: file,
       progress_cb: progress_cb
-    }, cb);
+    };
+    return _item_method_helper('file', 'upload', params, 'file', cb);
   };
 
   fileRename = function(file_id, name, cb) {
@@ -162,7 +151,7 @@
       file_id: file_id,
       name: name
     };
-    return _item_method_helper('file', 'rename', params, cb);
+    return _item_method_helper('file', 'rename', params, 'file', cb);
   };
 
   fileDelete = function(file_id, cb) {
@@ -170,7 +159,7 @@
     params = {
       file_id: file_id
     };
-    return _item_method_helper('file', 'delete', params, cb);
+    return _item_method_helper('file', 'delete', params, null, cb);
   };
 
   fileCopy = function(file_id, folder_id_dest, cb) {
@@ -179,7 +168,7 @@
       file_id: file_id,
       folder_id_dest: folder_id_dest
     };
-    return _item_method_helper('file', 'copy', params, cb);
+    return _item_method_helper('file', 'copy', params, null, cb);
   };
 
   fileMove = function(file_id, folder_id_dest, cb) {
@@ -188,7 +177,7 @@
       file_id: file_id,
       folder_id_dest: folder_id_dest
     };
-    return _item_method_helper('file', 'move', params, cb);
+    return _item_method_helper('file', 'move', params, null, cb);
   };
 
   folderInfo = function(folder_id, cb) {
@@ -199,7 +188,7 @@
     if (args.length === 1) {
       params.folder_id = args.shift();
     }
-    return _item_method_helper('folder', 'info', params, cb);
+    return _item_method_helper('folder', 'info', params, 'folder', cb);
   };
 
   folderContent = function(folder_id, cb) {
@@ -210,7 +199,7 @@
     if (args.length === 1) {
       params.folder_id = args.shift();
     }
-    return _item_method_helper('folder', 'content', params, cb);
+    return _item_method_helper('folder', 'content', params, 'folder', cb);
   };
 
   folderCreate = function(name, folder_id, cb) {
@@ -222,7 +211,7 @@
     if (args.length === 1) {
       params.folder_id = args.shift();
     }
-    return _item_method_helper('folder', 'create', params, cb);
+    return _item_method_helper('folder', 'create', params, 'folder', cb);
   };
 
   folderRename = function(folder_id, name, cb) {
@@ -231,7 +220,7 @@
       name: name,
       folder_id: folder_id
     };
-    return _item_method_helper('folder', 'rename', params, cb);
+    return _item_method_helper('folder', 'rename', params, 'folder', cb);
   };
 
   folderDelete = function(folder_id, cb) {
@@ -239,7 +228,7 @@
     params = {
       folder_id: folder_id
     };
-    return _item_method_helper('folder', 'delete', params, cb);
+    return _item_method_helper('folder', 'delete', params, null, cb);
   };
 
   folderCopy = function(folder_id, folder_id_dest, cb) {
@@ -248,7 +237,7 @@
       folder_id: folder_id,
       folder_id_dest: folder_id_dest
     };
-    return _item_method_helper('folder', 'copy', params, cb);
+    return _item_method_helper('folder', 'copy', params, null, cb);
   };
 
   folderMove = function(folder_id, folder_id_dest, cb) {
@@ -257,19 +246,19 @@
       folder_id: folder_id,
       folder_id_dest: folder_id_dest
     };
-    return _item_method_helper('folder', 'move', params, cb);
+    return _item_method_helper('folder', 'move', params, null, cb);
   };
 
   trashcanContent = function(cb) {
-    return _item_method_helper('trashcan', 'content', {}, cb);
+    return _item_method_helper('trashcan', 'content', {}, null, cb);
   };
 
   trashcanEmpty = function(cb) {
-    return _item_method_helper('trashcan', 'empty', {}, cb);
+    return _item_method_helper('trashcan', 'empty', {}, null, cb);
   };
 
   trashcanRestore = function(cb) {
-    return _item_method_helper('trashcan', 'restore', {}, cb);
+    return _item_method_helper('trashcan', 'restore', {}, null, cb);
   };
 
   window.FTClient = FTClient = {
