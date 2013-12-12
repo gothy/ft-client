@@ -158,7 +158,7 @@
     params = {
       file_id: file_id
     };
-    return _item_method_helper('file', 'delete', params, null, cb);
+    return _item_method_helper('file', 'delete', params, 'result', cb);
   };
 
   fileCopy = function(file_id, folder_id_dest, cb) {
@@ -167,7 +167,7 @@
       file_id: file_id,
       folder_id_dest: folder_id_dest
     };
-    return _item_method_helper('file', 'copy', params, null, cb);
+    return _item_method_helper('file', 'copy', params, 'result', cb);
   };
 
   fileMove = function(file_id, folder_id_dest, cb) {
@@ -176,7 +176,7 @@
       file_id: file_id,
       folder_id_dest: folder_id_dest
     };
-    return _item_method_helper('file', 'move', params, null, cb);
+    return _item_method_helper('file', 'move', params, 'result', cb);
   };
 
   folderInfo = function(options, cb) {
@@ -228,7 +228,7 @@
     params = {
       folder_id: folder_id
     };
-    return _item_method_helper('folder', 'delete', params, null, cb);
+    return _item_method_helper('folder', 'delete', params, 'result', cb);
   };
 
   folderCopy = function(folder_id, folder_id_dest, cb) {
@@ -237,7 +237,7 @@
       folder_id: folder_id,
       folder_id_dest: folder_id_dest
     };
-    return _item_method_helper('folder', 'copy', params, null, cb);
+    return _item_method_helper('folder', 'copy', params, 'result', cb);
   };
 
   folderMove = function(folder_id, folder_id_dest, cb) {
@@ -246,7 +246,7 @@
       folder_id: folder_id,
       folder_id_dest: folder_id_dest
     };
-    return _item_method_helper('folder', 'move', params, null, cb);
+    return _item_method_helper('folder', 'move', params, 'result', cb);
   };
 
   trashcanContent = function(cb) {

@@ -100,15 +100,15 @@ fileRename = (file_id, name, cb) ->
 
 fileDelete = (file_id, cb) ->
     params = {file_id: file_id}
-    _item_method_helper('file', 'delete', params, null, cb)
+    _item_method_helper('file', 'delete', params, 'result', cb)
 
 fileCopy = (file_id, folder_id_dest, cb) ->
     params = {file_id: file_id, folder_id_dest: folder_id_dest}
-    _item_method_helper('file', 'copy', params, null, cb)
+    _item_method_helper('file', 'copy', params, 'result', cb)
 
 fileMove = (file_id, folder_id_dest, cb) ->
     params = {file_id: file_id, folder_id_dest: folder_id_dest}
-    _item_method_helper('file', 'move', params, null, cb)
+    _item_method_helper('file', 'move', params, 'result', cb)
 
 
 folderInfo = (options, cb) ->
@@ -141,15 +141,15 @@ folderRename = (folder_id, name, cb) ->
 
 folderDelete = (folder_id, cb) ->
     params = {folder_id: folder_id}
-    _item_method_helper('folder', 'delete', params, null, cb)
+    _item_method_helper('folder', 'delete', params, 'result', cb)
 
 folderCopy = (folder_id, folder_id_dest, cb) ->
     params = {folder_id: folder_id, folder_id_dest: folder_id_dest}
-    _item_method_helper('folder', 'copy', params, null, cb)
+    _item_method_helper('folder', 'copy', params, 'result', cb)
 
 folderMove = (folder_id, folder_id_dest, cb) ->
     params = {folder_id: folder_id, folder_id_dest: folder_id_dest}
-    _item_method_helper('folder', 'move', params, null, cb)
+    _item_method_helper('folder', 'move', params, 'result', cb)
 
 
 trashcanContent = (cb) ->
