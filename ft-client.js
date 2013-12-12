@@ -185,7 +185,7 @@
     args = Array.prototype.slice.call(arguments);
     cb = args.pop();
     if (args.length === 1) {
-      params.folder_id = options.folder_id;
+      params = options;
     }
     return _item_method_helper('folder', 'info', params, 'folder', cb);
   };
@@ -196,7 +196,7 @@
     args = Array.prototype.slice.call(arguments);
     cb = args.pop();
     if (args.length === 1) {
-      params.folder_id = options.folder_id;
+      params = options;
     }
     return _item_method_helper('folder', 'content', params, 'folder', cb);
   };
@@ -209,7 +209,7 @@
     args = Array.prototype.slice.call(arguments);
     cb = args.pop();
     if (args.length === 2) {
-      params.folder_id = options.folder_id;
+      params = options;
     }
     return _item_method_helper('folder', 'create', params, 'folder', cb);
   };

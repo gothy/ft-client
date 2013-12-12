@@ -115,24 +115,23 @@ folderInfo = (options, cb) ->
     params = {}
     args = Array.prototype.slice.call(arguments)
     cb = args.pop()
-    if args.length is 1 # user wants to pass custom fields
-        params.folder_id = options.folder_id
+    if args.length is 1 then params = options # user wants to pass custom fields
+    
     _item_method_helper('folder', 'info', params, 'folder', cb)
 
 folderContent = (options, cb) ->
     params = {}
     args = Array.prototype.slice.call(arguments)
     cb = args.pop()
-    if args.length is 1 # user wants to pass a custom fields
-        params.folder_id = options.folder_id
+    if args.length is 1 then params = options # user wants to pass a custom fields
+    
     _item_method_helper('folder', 'content', params, 'folder', cb)
 
 folderCreate = (name, options, cb) ->
     params = {name: name}
     args = Array.prototype.slice.call(arguments)
     cb = args.pop()
-    if args.length is 2 # user wants to pass a custom fields
-        params.folder_id = options.folder_id
+    if args.length is 2 then params = options
 
     _item_method_helper('folder', 'create', params, 'folder', cb)
 
