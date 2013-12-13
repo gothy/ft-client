@@ -253,12 +253,26 @@
     return _item_method_helper('trashcan', 'content', {}, null, cb);
   };
 
-  trashcanEmpty = function(cb) {
-    return _item_method_helper('trashcan', 'empty', {}, null, cb);
+  trashcanEmpty = function(options, cb) {
+    var args, params;
+    params = {};
+    args = Array.prototype.slice.call(arguments);
+    cb = args.pop();
+    if (args.length === 1) {
+      params = options;
+    }
+    return _item_method_helper('trashcan', 'empty', params, null, cb);
   };
 
-  trashcanRestore = function(cb) {
-    return _item_method_helper('trashcan', 'restore', {}, null, cb);
+  trashcanRestore = function(options, cb) {
+    var args, params;
+    params = {};
+    args = Array.prototype.slice.call(arguments);
+    cb = args.pop();
+    if (args.length === 1) {
+      params = options;
+    }
+    return _item_method_helper('trashcan', 'restore', params, null, cb);
   };
 
   window.FTClient = FTClient = {

@@ -155,11 +155,21 @@ folderMove = (folder_id, folder_id_dest, cb) ->
 trashcanContent = (cb) ->
     _item_method_helper('trashcan', 'content', {}, null, cb)
 
-trashcanEmpty = (cb) ->
-    _item_method_helper('trashcan', 'empty', {}, null, cb)
+trashcanEmpty = (options, cb) ->
+    params = {}
+    args = Array.prototype.slice.call(arguments)
+    cb = args.pop()
+    if args.length is 1 then params = options # user wants to pass a custom fields
 
-trashcanRestore = (cb) ->
-    _item_method_helper('trashcan', 'restore', {}, null, cb)
+    _item_method_helper('trashcan', 'empty', params, null, cb)
+
+trashcanRestore = (options, cb) ->
+    params = {}
+    args = Array.prototype.slice.call(arguments)
+    cb = args.pop()
+    if args.length is 1 then params = options # user wants to pass a custom fields
+
+    _item_method_helper('trashcan', 'restore', params, null, cb)
 
 
 window.FTClient = FTClient = {
