@@ -161,7 +161,7 @@ trashcanEmpty = (options, cb) ->
     cb = args.pop()
     if args.length is 1 then params = options # user wants to pass a custom fields
 
-    _item_method_helper('trashcan', 'empty', params, null, cb)
+    _item_method_helper('trashcan', 'empty', params, 'result', cb)
 
 trashcanRestore = (options, cb) ->
     params = {}
@@ -169,7 +169,7 @@ trashcanRestore = (options, cb) ->
     cb = args.pop()
     if args.length is 1 then params = options # user wants to pass a custom fields
 
-    _item_method_helper('trashcan', 'restore', params, null, cb)
+    _item_method_helper('trashcan', 'restore', params, 'result', cb)
 
 
 window.FTClient = FTClient = {

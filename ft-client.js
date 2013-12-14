@@ -261,7 +261,7 @@
     if (args.length === 1) {
       params = options;
     }
-    return _item_method_helper('trashcan', 'empty', params, null, cb);
+    return _item_method_helper('trashcan', 'empty', params, 'result', cb);
   };
 
   trashcanRestore = function(options, cb) {
@@ -272,7 +272,7 @@
     if (args.length === 1) {
       params = options;
     }
-    return _item_method_helper('trashcan', 'restore', params, null, cb);
+    return _item_method_helper('trashcan', 'restore', params, 'result', cb);
   };
 
   window.FTClient = FTClient = {
