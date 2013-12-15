@@ -202,14 +202,17 @@
   };
 
   folderCreate = function(name, options, cb) {
-    var args, params;
+    var args, k, params, v;
     params = {
       name: name
     };
     args = Array.prototype.slice.call(arguments);
     cb = args.pop();
     if (args.length === 2) {
-      params = options;
+      for (k in options) {
+        v = options[k];
+        params[k] = v;
+      }
     }
     return _item_method_helper('folder', 'create', params, 'folder', cb);
   };

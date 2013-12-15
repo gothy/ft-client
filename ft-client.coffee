@@ -131,7 +131,9 @@ folderCreate = (name, options, cb) ->
     params = {name: name}
     args = Array.prototype.slice.call(arguments)
     cb = args.pop()
-    if args.length is 2 then params = options
+    if args.length is 2 
+        for k,v of options
+            params[k] = v
 
     _item_method_helper('folder', 'create', params, 'folder', cb)
 
