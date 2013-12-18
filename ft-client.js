@@ -132,15 +132,18 @@
     return _item_method_helper('user', 'info', {}, 'user', cb);
   };
 
-  fileUpload = function(name, hash, size, file, progress_cb, cb) {
-    var params;
-    params = {
-      name: name,
-      hash: hash,
-      size: size,
-      file: file,
-      progress_cb: progress_cb
-    };
+  fileUpload = function(name, hash, size, file, options, cb) {
+    var args, params;
+    params = {};
+    args = Array.prototype.slice.call(arguments);
+    cb = args.pop();
+    if (args.length === 5) {
+      params = options;
+    }
+    params.name = name;
+    params.hash = hash;
+    params.size = size;
+    params.file = file;
     return _item_method_helper('file', 'upload', params, 'file', cb);
   };
 

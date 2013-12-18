@@ -90,8 +90,18 @@ userInfo = (cb) ->
     _item_method_helper('user', 'info', {}, 'user', cb)
 
 
-fileUpload = (name, hash, size, file, progress_cb, cb) ->
-    params = {name: name, hash: hash, size: size, file: file, progress_cb: progress_cb}
+fileUpload = (name, hash, size, file, options, cb) ->
+    params = {}
+    args = Array.prototype.slice.call(arguments)
+    cb = args.pop()
+    if args.length is 5 then params = options
+
+    params.name = name
+    params.hash = hash
+    params.size = size
+    params.file = file
+
+    # params = {name: name, hash: hash, size: size, file: file, progress_cb: progress_cb}
     _item_method_helper('file', 'upload', params, 'file', cb)
 
 fileRename = (file_id, name, cb) ->
