@@ -1,4 +1,7 @@
-base_url = 'http://filestrash.com/api/v1'
+protocol = window.location.href.split('://')[0]
+if protocol is 'file' then protocol = 'http'
+
+base_url = "#{protocol}://filestrash.com/api/v1"
 
 token = ''
 
