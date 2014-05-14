@@ -38,10 +38,10 @@ _do_file_upload = (params, upload_url, cb) ->
                 if cb && typeof cb == 'function' then cb(null, data.response.file)
             else
                 if cb && typeof cb == 'function'
-                    cb(new ApiError("#{data.status}: #{data.details}"))
+                    cb(new ApiError("#{data.details}(#{data.status})"))
         else if xhr.readyState is 4 and xhr.status isnt 200
             if cb && typeof cb == 'function' 
-                cb(new NetworkError("#{xhr.status}: #{status}"))
+                cb(new NetworkError("#{status}(#{xhr.status})"))
     
     xhr.send(form_data)
 
@@ -79,10 +79,10 @@ _item_method_helper = (itype, method, params, response_field, cb) ->
             else
                 # once the response status in not 200, we should pass an ApiError to callback
                 if cb && typeof cb == 'function'
-                    cb(new ApiError("#{data?.status}: #{data?.details}"))
+                    cb(new ApiError("#{data?.details}(#{data?.status})"))
         else if xhr.readyState is 4 and xhr.status isnt 200
             if cb && typeof cb == 'function' 
-                cb(new NetworkError("#{xhr.status}: #{status}"))
+                cb(new NetworkError("#{status}(#{xhr.status})"))
     
     xhr.send()
 
