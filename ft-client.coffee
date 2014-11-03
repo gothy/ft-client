@@ -1,3 +1,5 @@
+"use strict"
+
 protocol = window.location.href.split('://')[0]
 if protocol is 'file' then protocol = 'http'
 
@@ -22,7 +24,7 @@ _do_file_upload = (params, upload_url, cb) ->
     form_data = new FormData()
     form_data.append("file", params.file)
     form_data.append("token", params.token || token)
-    upload_progress = (event) =>
+    upload_progress = (event) ->
         if event.lengthComputable
             if params.progress_cb && typeof params.progress_cb == 'function'
                 params.progress_cb(Math.ceil(event.loaded / event.total * 100))
@@ -40,7 +42,7 @@ _do_file_upload = (params, upload_url, cb) ->
                 if cb && typeof cb == 'function'
                     cb(new ApiError("#{data.details}(#{data.status})"))
         else if xhr.readyState is 4 and xhr.status isnt 200
-            if cb && typeof cb == 'function' 
+            if cb && typeof cb == 'function'
                 cb(new NetworkError("#{status}(#{xhr.status})"))
     
     xhr.send(form_data)
@@ -69,9 +71,9 @@ _item_method_helper = (itype, method, params, response_field, cb) ->
                 if itype is 'user' and method is 'login'
                     token = data.response.token # set global token on login
                 else if itype is 'file' and method is 'upload' # file upload method
-                    if data.response.upload_url 
+                    if data.response.upload_url
                         twolevel = true # it's a two-level operation
-                        _do_file_upload(params, data.response.upload_url, cb) 
+                        _do_file_upload(params, data.response.upload_url, cb)
                 
                 # by default: call passed callback with a response result
                 if cb && typeof cb == 'function' && (not twolevel)
@@ -81,7 +83,7 @@ _item_method_helper = (itype, method, params, response_field, cb) ->
                 if cb && typeof cb == 'function'
                     cb(new ApiError("#{data?.details}(#{data?.status})"))
         else if xhr.readyState is 4 and xhr.status isnt 200
-            if cb && typeof cb == 'function' 
+            if cb && typeof cb == 'function'
                 cb(new NetworkError("#{status}(#{xhr.status})"))
     
     xhr.send()
@@ -123,6 +125,10 @@ fileMove = (file_id, folder_id_dest, cb) ->
     params = {file_id: file_id, folder_id_dest: folder_id_dest}
     _item_method_helper('file', 'move', params, 'result', cb)
 
+fileChangeMode = (file_id, mode, cb) ->
+    params = {file_id: file_id, mode: mode}
+    _item_method_helper('file', 'change_mode', params, 'file', cb)
+
 
 folderInfo = (options, cb) ->
     params = {}
@@ -144,7 +150,7 @@ folderCreate = (name, options, cb) ->
     params = {name: name}
     args = Array.prototype.slice.call(arguments)
     cb = args.pop()
-    if args.length is 2 
+    if args.length is 2
         for k,v of options
             params[k] = v
 
@@ -165,6 +171,10 @@ folderCopy = (folder_id, folder_id_dest, cb) ->
 folderMove = (folder_id, folder_id_dest, cb) ->
     params = {folder_id: folder_id, folder_id_dest: folder_id_dest}
     _item_method_helper('folder', 'move', params, 'result', cb)
+
+folderChangeMode = (folder_id, mode, cb) ->
+    params = {folder_id: folder_id, mode: mode}
+    _item_method_helper('folder', 'change_mode', params, 'folder', cb)
 
 
 trashcanContent = (cb) ->
@@ -187,6 +197,47 @@ trashcanRestore = (options, cb) ->
     _item_method_helper('trashcan', 'restore', params, 'result', cb)
 
 
+remoteCreate = (url, options, cb) ->
+    params = {}
+    args = Array.prototype.slice.call(arguments)
+    cb = args.pop()
+    if args.length is 2 then params = options
+    params.url = url
+
+    _item_method_helper('remote', 'create', params, '', cb)
+
+remoteDelete = (job_id, cb) ->
+    params = {job_id: job_id}
+
+    _item_method_helper('remote', 'delete', params, 'result', cb)
+
+remoteInfo = (options, cb) ->
+    params = {}
+    args = Array.prototype.slice.call(arguments)
+    cb = args.pop()
+    if args.length is 1 then params = options
+
+    _item_method_helper('remote', 'info', params, '', cb)
+
+
+onetimeCreate = (file_id, options, cb) ->
+    params = {}
+    args = Array.prototype.slice.call(arguments)
+    cb = args.pop()
+    if args.length is 2 then params = options
+    params.file_id = file_id
+
+    _item_method_helper('one_time_download', 'create', params, 'download', cb)
+
+onetimeInfo = (options, cb) ->
+    params = {}
+    args = Array.prototype.slice.call(arguments)
+    cb = args.pop()
+    if args.length is 1 then params = options
+
+    _item_method_helper('one_time_download', 'info', params, '', cb)
+
+
 window.FTClient = FTClient = {
     # internal stuff, can monkeypatch thought
     _setToken: (newToken) ->
@@ -205,6 +256,7 @@ window.FTClient = FTClient = {
     fileDelete: fileDelete
     fileMove: fileMove
     fileCopy: fileCopy
+    fileChangeMode: fileChangeMode
 
     folderInfo: folderInfo
     folderContent: folderContent
@@ -213,8 +265,16 @@ window.FTClient = FTClient = {
     folderDelete: folderDelete
     folderCopy: folderCopy
     folderMove: folderMove
+    folderChangeMode: folderChangeMode
 
     trashcanContent: trashcanContent
     trashcanEmpty: trashcanEmpty
     trashcanRestore: trashcanRestore
+
+    remoteCreate: remoteCreate
+    remoteDelete: remoteDelete
+    remoteInfo: remoteInfo
+
+    onetimeCreate: onetimeCreate
+    onetimeInfo: onetimeInfo
 }
