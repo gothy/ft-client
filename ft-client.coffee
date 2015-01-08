@@ -32,6 +32,9 @@ _do_file_upload = (params, upload_url, cb) ->
     xhr = new XMLHttpRequest()
     xhr.open("POST", upload_url, true)
     xhr.upload.onprogress = upload_progress
+    if params.abort_cb && typeof params.abort_cb == 'function'
+        xhr.onabort = params.abort_cb
+
     xhr.onreadystatechange = ->
         if xhr.readyState is 4 and xhr.status is 200
             data = JSON.parse(xhr.responseText)
@@ -46,6 +49,10 @@ _do_file_upload = (params, upload_url, cb) ->
                 cb(new NetworkError("#{status}(#{xhr.status})"))
     
     xhr.send(form_data)
+
+    # give uploading request to the caller
+    if params.upload_xhr_available && typeof params.upload_xhr_available == 'function'
+        params.upload_xhr_available(xhr)
 
 _fldr_ops = ['info', 'content', 'create', 'rename']
 _item_method_helper = (itype, method, params, response_field, cb) ->

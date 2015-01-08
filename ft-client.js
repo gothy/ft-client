@@ -56,6 +56,9 @@
     xhr = new XMLHttpRequest();
     xhr.open("POST", upload_url, true);
     xhr.upload.onprogress = upload_progress;
+    if (params.abort_cb && typeof params.abort_cb === 'function') {
+      xhr.onabort = params.abort_cb;
+    }
     xhr.onreadystatechange = function() {
       var data, response;
       if (xhr.readyState === 4 && xhr.status === 200) {
@@ -76,7 +79,10 @@
         }
       }
     };
-    return xhr.send(form_data);
+    xhr.send(form_data);
+    if (params.upload_xhr_available && typeof params.upload_xhr_available === 'function') {
+      return params.upload_xhr_available(xhr);
+    }
   };
 
   _fldr_ops = ['info', 'content', 'create', 'rename'];
