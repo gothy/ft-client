@@ -119,12 +119,12 @@
           }
         } else {
           if (cb && typeof cb === 'function') {
-            return cb(new ApiError("" + (data != null ? data.details : void 0) + "(" + (data != null ? data.status : void 0) + ")"));
+            return cb(new ApiError("" + (data != null ? data.details : void 0)));
           }
         }
       } else if (xhr.readyState === 4 && xhr.status !== 200) {
         if (cb && typeof cb === 'function') {
-          return cb(new NetworkError("" + status + "(" + xhr.status + ")"));
+          return cb(new NetworkError("" + status));
         }
       }
     };
