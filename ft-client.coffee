@@ -43,10 +43,10 @@ _do_file_upload = (params, upload_url, cb) ->
                 if cb && typeof cb == 'function' then cb(null, data.response.file)
             else
                 if cb && typeof cb == 'function'
-                    cb(new ApiError("#{data.details}(#{data.status})"))
+                    cb(new ApiError("#{data?.details}"))
         else if xhr.readyState is 4 and xhr.status isnt 200
             if cb && typeof cb == 'function'
-                cb(new NetworkError("#{status}(#{xhr.status})"))
+                cb(new NetworkError("Network error"))
     
     xhr.send(form_data)
 
@@ -91,7 +91,7 @@ _item_method_helper = (itype, method, params, response_field, cb) ->
                     cb(new ApiError("#{data?.details}"))
         else if xhr.readyState is 4 and xhr.status isnt 200
             if cb && typeof cb == 'function'
-                cb(new NetworkError("#{status}"))
+                cb(new NetworkError("Network error"))
     
     xhr.send()
 

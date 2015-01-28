@@ -70,12 +70,12 @@
           }
         } else {
           if (cb && typeof cb === 'function') {
-            return cb(new ApiError("" + data.details + "(" + data.status + ")"));
+            return cb(new ApiError("" + (data != null ? data.details : void 0)));
           }
         }
       } else if (xhr.readyState === 4 && xhr.status !== 200) {
         if (cb && typeof cb === 'function') {
-          return cb(new NetworkError("" + status + "(" + xhr.status + ")"));
+          return cb(new NetworkError("Network error"));
         }
       }
     };
@@ -124,7 +124,7 @@
         }
       } else if (xhr.readyState === 4 && xhr.status !== 200) {
         if (cb && typeof cb === 'function') {
-          return cb(new NetworkError("" + status));
+          return cb(new NetworkError("Network error"));
         }
       }
     };
